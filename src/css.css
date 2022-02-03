@@ -1,0 +1,14 @@
+div{
+  display: flex;
+  flex-direction: column;
+  justify-content:  center;
+  align-items: center;
+
+  text-decoration: none;
+  text-decoration: none;
+  
+  font-weight: 700;
+  font-size: 17px;
+  color: #000000;
+}
+
