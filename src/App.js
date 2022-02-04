@@ -1,4 +1,3 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SignInPage from "./pages/SignInPage";
 import SignUpPage from "./pages/SignUpPage";
 import HomePage from "./pages/HomePage";
@@ -7,8 +6,13 @@ import OutputPage from "./pages/OutputPage";
 import EditInputPage from "./pages/EditInputPage";
 import EditOutputPage from "./pages/EditOutputPage";
 import GlobalStyle from "./styles";
+import {UserContext} from "./contexts/UserContext"
+import { useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App(){
+  const [user, setUser] = useState();
+  
   return(
     <>
       <GlobalStyle/>
