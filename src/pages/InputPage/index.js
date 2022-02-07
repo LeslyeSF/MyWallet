@@ -1,13 +1,13 @@
-import axios from "axios";
+import UserContext from "../../contexts/UserContext";
+import { submitRecord } from "../../services/apiService";
+import { errorMessage, successMessage } from "../../services/messageService";
+import { tokenVerify } from "../../services/tokenService";
+import {ScreenInput, Title} from "./style";
+
 import { useState } from "react";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
 import { useEffect } from "react/cjs/react.development";
-import Swal from "sweetalert2";
-import UserContext from "../../contexts/UserContext";
-import { submitRecord } from "../../services/apiService";
-import { tokenVerify } from "../../services/tokenService";
-import {ScreenInput, Title} from "./style";
 
 export default function InputPage(){
   const {token} = useContext(UserContext);
@@ -24,19 +24,18 @@ export default function InputPage(){
       value: value,
       status: "input"
     };
+    
     const promise = submitRecord(body, token);
     promise.then(()=>{
+      successMessage("Registro feito com sucesso!");
       navigate("/home");
     });
     promise.catch((err)=>{
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Ocorreu um erro no cadastro do registro!'
-      });
+      errorMessage("Ocorreu um erro no cadastro do registro!");
       console.log(err.response);
     });
   }
+  
   return(
     <ScreenInput>
       <Title>Nova Entrada</Title>
@@ -46,7 +45,9 @@ export default function InputPage(){
         placeholder="Valor" 
         value={value} 
         onChange={e => setValue(e.target.value)}
+        pattern={"[0-9]+\,[0-9]{2}$"}
         required/>
+        <label>Padrão: 0,00</label>
         <input 
         type="text" 
         placeholder="Descrição" 

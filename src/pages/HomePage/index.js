@@ -3,19 +3,18 @@ import RegistrationBox from "../../components/RegistrationBox";
 import ButtonOut from "../../components/ButtonOut";
 import PlusIcon from "../../components/PlusIcon";
 import MinusIcon from "../../components/MinusIcon";
+import UserContext from "../../contexts/UserContext";
+import { tokenVerify } from "../../services/tokenService";
+import { getData } from "../../services/apiService";
 
 import { Link } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router";
-import UserContext from "../../contexts/UserContext";
-import { tokenVerify } from "../../services/tokenService";
-import { getDates } from "../../services/apiService";
 
 export default function HomePage(){
   const {token} = useContext(UserContext);
   const navigate = useNavigate();
-  const [date, setDate] = useState({
+  const [data, setData] = useState({
     name:"",
     records: []
   });
@@ -23,22 +22,22 @@ export default function HomePage(){
   useEffect(()=>{
     tokenVerify(navigate, token);
     
-    const promise = getDates(token);
+    const promise = getData(token);
     promise.then((answer)=>{
-      setDate(answer.data);
+      setData(answer.data);
     });
     promise.catch((err)=>{
       console.log(err.response);
     });
   },[]);
-
+  
   return(
     <ScreenHome>
       <Title>
-        <p>Olá, {date.name}</p>
+        <p>Olá, {data.name}</p>
         <ButtonOut/>
       </Title>
-      <RegistrationBox records={date.records}/>
+      <RegistrationBox records={data.records} setDate={setData}/>
       <Options>
         <Link to="/entrada" style={{textDecoration:"none"}}>
           <div>

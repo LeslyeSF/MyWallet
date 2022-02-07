@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
@@ -12,9 +11,8 @@ export default function ButtonOut(){
   function handleDeleteSession(){
     const promise = deleteSession(token);
     promise.then(()=>{
-      localStorage.setItem("MyWallet_token", "undefined");
+      localStorage.removeItem("MyWallet_token");
       navigate("/");
-
     });
     promise.catch((err)=>{
       console.log(err);

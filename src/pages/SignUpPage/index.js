@@ -1,15 +1,13 @@
 import { ScreenSignUp, LinkStyled } from "./style";
 import Logo from "../../components/Logo";
-
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { useNavigate } from "react-router";
-import Swal from 'sweetalert2';
-import { useContext, useEffect, useState } from "react";
 import { tokenVerifyLocalStorage } from "../../services/tokenService";
 import UserContext from "../../contexts/UserContext";
 import { signUp } from "../../services/apiService";
+import { errorMessage } from "../../services/messageService";
 
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
 
 export default function SignUpPage(){
   const navigate = useNavigate();
@@ -35,6 +33,7 @@ export default function SignUpPage(){
     }
     setForm({...form});
   }
+
   function handleRegister(e){
     e.preventDefault();
     if(form.password === form.confirmPassword){
@@ -47,24 +46,13 @@ export default function SignUpPage(){
       promise.then(()=>{
         navigate("/");
       });
-      promise.catch(()=>{
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Ocorreu um erro no cadastro!'
-        });
+      promise.catch((err)=>{
+        errorMessage("Ocorreu um erro no cadastro!");
+        console.log(err.response);
       });
     } else{
-  
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'As senhas registradas são diferentes!'
-      });
-  
+        errorMessage("As senhas registradas são diferentes!");
     }
-    
-  
   }
   
   return(
@@ -84,11 +72,13 @@ export default function SignUpPage(){
         <input 
         type="password" 
         placeholder="Senha" 
+        minLength={"8"} 
         value={form.password} 
         onChange={e=> handleSetForm(e,"password")}/>
         <input 
         type="password" 
-        placeholder="Confirme a senha" 
+        placeholder="Confirme a senha"
+        minLength={"8"} 
         value={form.confirmPassword} 
         onChange={e=> handleSetForm(e,"confirmPassword")}/>
         <button type="submit">Cadastrar</button>

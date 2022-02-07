@@ -77,7 +77,7 @@ const Balance = styled.div`
   }
 `;
 const Total = styled.div`
-    color: #03AC00;
+    color: ${props => (props.total > 0) ? "#03AC00" : "#C70000"};
     font-weight: 400;
     font-size: 17px;
 `;

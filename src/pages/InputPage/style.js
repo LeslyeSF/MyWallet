@@ -63,6 +63,10 @@ const ScreenInput = styled.div`
         cursor:pointer;
       }
     }
+    label{
+      color: #FFFFFF;
+      font-size: 15px;
+    }
    
   }
   

@@ -16,10 +16,10 @@ export function signUp(body){
   const promise = axios.post("http://localhost:5000/register", body);
   return promise;
 }
-export function getDates(token){
+export function getData(token){
   const config = createConfig(token);
   
-  const promise = axios.get("http://localhost:5000/dates", config);
+  const promise = axios.get("http://localhost:5000/data", config);
 
   return promise;
 }
@@ -36,5 +36,10 @@ export function deleteSession(token){
 export function deleteRecord(token,id){
   const config = createConfig(token);
   const promise = axios.delete(`http://localhost:5000/deleterecord?idRecord=${id}`, config);
+  return promise;
+}
+export function editRecord(body, token){
+  const config = createConfig(token);
+  const promise = axios.post("http://localhost:5000/editrecord", body, config);
   return promise;
 }

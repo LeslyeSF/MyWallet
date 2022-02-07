@@ -1,6 +1,6 @@
 export function tokenVerifyLocalStorage(navigate, setToken){
   const tokenVerify = localStorage.getItem("MyWallet_token");
-    if(tokenVerify !== "undefined"){
+    if(tokenVerify){
       setToken(tokenVerify);
       navigate("/home");
     }

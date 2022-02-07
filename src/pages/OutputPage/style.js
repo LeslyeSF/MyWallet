@@ -22,6 +22,11 @@ const ScreenOutput = styled.div`
 
     margin: 24px 0px 36px 0px;
 
+    label{
+      color: #FFFFFF;
+      font-size: 15px;
+    }
+
     input{
       width: 325px;
       height: 58px;

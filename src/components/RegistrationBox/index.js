@@ -1,19 +1,29 @@
-import axios from "axios";
 import { useContext } from "react";
 import { Registrationbox, List, Value, Info, Balance, Total } from "./style";
 import UserContext from "../../contexts/UserContext";
-import Swal from "sweetalert2";
-import { deleteRecord } from "../../services/apiService";
+import { deleteRecord, getData } from "../../services/apiService";
+import { errorMessage, successMessage } from "../../services/messageService";
+import { useNavigate } from "react-router";
 
-export default function RegistrationBox({records}){
-  const {token} = useContext(UserContext);
+export default function RegistrationBox({records, setDate}){
+  const {token, setRecord} = useContext(UserContext);
+  const navigate = useNavigate();
 
-  let balance ="";
+  let balance ="", total = 0;
   if(records.length > 0){
     records = records.map((date)=>{
+      let aux = parseFloat(date.value.replace(",","."));
+      if(date.status === "input"){
+        total = total + aux;
+      }else{
+        total = total - aux;
+      }
       return(
         <div>
-            <Info><span>{date.day}</span> {date.description}</Info>
+            <Info onClick={()=> handleEditRecord(date.idRecord,date.value,date.description,date.status )}>
+              <span>{date.day}</span> 
+              {date.description}
+            </Info>
             <Value status={date.status}>
               {date.value} 
               <span onClick={()=> handleDeleteRecord(date.idRecord)}>x</span>
@@ -21,28 +31,42 @@ export default function RegistrationBox({records}){
         </div>
       );
     });
-    balance = <Balance>
-    <p>SALDO</p>
-    <Total>19999</Total>
-  </Balance>;
+    balance = <Balance><p>SALDO</p><Total total={total}>{total.toFixed(2)}</Total></Balance>;
   }
+
+  function handleEditRecord(id, value, description, status){
+    const record = {
+      idRecord: id,
+      description: description,
+      value: value,
+      status: status
+    };
+    setRecord(record);
+    if(status === "output"){
+      navigate("/editarsaida");
+    }else{
+      navigate("/editarentrada");
+    }
+  }
+  
   function handleDeleteRecord(id){
     const promise = deleteRecord(token,id);
     promise.then(()=>{
-      Swal.fire({
-        icon: 'success',
-        title: 'Oba..',
-        text: 'Registro deletado com sucesso!'
+      successMessage("Registro deletado com sucesso!");
+      const promise = getData(token);
+      promise.then((answer)=>{
+        setDate(answer.data);
+      });
+      promise.catch((err)=>{
+        errorMessage("Falha ao atualizar a página!");
+        console.log(err.response);
       });
     });
     promise.catch((err)=>{
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Ocorreu um erro ao deletar o registro!'
-      });
+      errorMessage("Ocorreu um erro ao deletar o registro!");
     });
   }
+
   return(
     <Registrationbox records={(records.length > 0)}>
       <List>

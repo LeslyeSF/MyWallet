@@ -11,11 +11,11 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App(){
-  const [user, setUser] = useState("");
+  const [Record, setRecord] = useState("");
   const [token, setToken] = useState(undefined);
   
   return(
-    <UserContext.Provider value={{user, setUser, token, setToken}}>
+    <UserContext.Provider value={{Record, setRecord, token, setToken}}>
       <GlobalStyle/>
       <BrowserRouter>
         <Routes>

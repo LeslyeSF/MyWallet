@@ -1,16 +1,13 @@
 import { ScreenSignIn, LinkStyled } from "./style";
 import Logo from "../../components/Logo";
 import UserContext from "../../contexts/UserContext";
-
-import { Link } from "react-router-dom";
-import { useContext, useState } from "react";
-import Swal from 'sweetalert2';
-import axios from "axios";
-import { useNavigate } from "react-router";
-import { useEffect } from "react";
 import {tokenVerifyLocalStorage} from "../../services/tokenService";
 import { login } from "../../services/apiService";
+import { errorMessage } from "../../services/messageService";
 
+import { Link } from "react-router-dom";
+import { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function SignInPage(){
   const navigate = useNavigate();
@@ -33,14 +30,11 @@ export default function SignInPage(){
       navigate("/home");
     });
     promise.catch((err)=>{
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Ocorreu um erro no Login!'
-      });
-      console.log(err);
+      errorMessage("Ocorreu um erro no Login!");
+      console.log(err.response);
     });    
   }
+
   return(
     <ScreenSignIn>
       <Logo/>
