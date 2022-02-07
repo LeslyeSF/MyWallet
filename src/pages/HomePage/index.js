@@ -5,35 +5,40 @@ import PlusIcon from "../../components/PlusIcon";
 import MinusIcon from "../../components/MinusIcon";
 
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router";
+import UserContext from "../../contexts/UserContext";
+import { tokenVerify } from "../../services/tokenService";
+import { getDates } from "../../services/apiService";
 
 export default function HomePage(){
-  //Verificar se existe token
-  //Se sim: 
+  const {token} = useContext(UserContext);
+  const navigate = useNavigate();
+  const [date, setDate] = useState({
+    name:"",
+    records: []
+  });
+  
   useEffect(()=>{
-    const config = {
-      headers:{
-        "Authorization": `Barer token`
-      }
-    };
-    const promise = axios.get("http://localhost:5000/dates", config);
+    tokenVerify(navigate, token);
+    
+    const promise = getDates(token);
     promise.then((answer)=>{
-      console.log(answer.data);
+      setDate(answer.data);
     });
     promise.catch((err)=>{
       console.log(err.response);
     });
   },[]);
-  //se nao: redireciona para pagina login 
 
   return(
     <ScreenHome>
       <Title>
-        <p>Olá, Fulano</p>
+        <p>Olá, {date.name}</p>
         <ButtonOut/>
       </Title>
-      <RegistrationBox/>
+      <RegistrationBox records={date.records}/>
       <Options>
         <Link to="/entrada" style={{textDecoration:"none"}}>
           <div>

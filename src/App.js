@@ -6,15 +6,16 @@ import OutputPage from "./pages/OutputPage";
 import EditInputPage from "./pages/EditInputPage";
 import EditOutputPage from "./pages/EditOutputPage";
 import GlobalStyle from "./styles";
-import {UserContext} from "./contexts/UserContext"
+import UserContext from './contexts/UserContext';
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App(){
-  const [user, setUser] = useState();
+  const [user, setUser] = useState("");
+  const [token, setToken] = useState(undefined);
   
   return(
-    <>
+    <UserContext.Provider value={{user, setUser, token, setToken}}>
       <GlobalStyle/>
       <BrowserRouter>
         <Routes>
@@ -27,6 +28,6 @@ export default function App(){
           <Route path="/editarsaida" element={<EditOutputPage/>}/>
         </Routes>
       </BrowserRouter>
-    </>
+    </UserContext.Provider>
   );
 }

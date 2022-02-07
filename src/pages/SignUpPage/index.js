@@ -5,17 +5,23 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import Swal from 'sweetalert2';
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { tokenVerifyLocalStorage } from "../../services/tokenService";
+import UserContext from "../../contexts/UserContext";
+import { signUp } from "../../services/apiService";
 
 
 export default function SignUpPage(){
   const navigate = useNavigate();
+  const {setToken} = useContext(UserContext);
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: ""
   });
+
+  useEffect(()=>tokenVerifyLocalStorage(navigate, setToken),[]);
   
   function handleSetForm(e, type){
     if(type==="email"){
@@ -29,30 +35,25 @@ export default function SignUpPage(){
     }
     setForm({...form});
   }
-  async function handleRegister(e){
+  function handleRegister(e){
     e.preventDefault();
     if(form.password === form.confirmPassword){
-  
-      try{
-  
-        const body = {
-          name: form.name,
-          email: form.email,
-          password: form.password
-        };
-        await axios.post("http://localhost:5000/register", body);
+      const body = {
+        name: form.name,
+        email: form.email,
+        password: form.password
+      };
+      const promise = signUp(body);
+      promise.then(()=>{
         navigate("/");
-  
-      }catch{
-  
+      });
+      promise.catch(()=>{
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
           text: 'Ocorreu um erro no cadastro!'
         });
-  
-      }
-  
+      });
     } else{
   
       Swal.fire({

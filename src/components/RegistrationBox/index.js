@@ -1,96 +1,54 @@
-import styled from "styled-components";
-//      <span>Não há registros de <br/>entrada ou saída</span>
+import axios from "axios";
+import { useContext } from "react";
+import { Registrationbox, List, Value, Info, Balance, Total } from "./style";
+import UserContext from "../../contexts/UserContext";
+import Swal from "sweetalert2";
+import { deleteRecord } from "../../services/apiService";
 
-export default function RegistrationBox(){
-  return(
-    <Registrationbox>
-      <List>
+export default function RegistrationBox({records}){
+  const {token} = useContext(UserContext);
+
+  let balance ="";
+  if(records.length > 0){
+    records = records.map((date)=>{
+      return(
         <div>
-          <Info><span>30/05</span> ALMOCO</Info>
-          <Value>39.90 <span>x</span></Value>
+            <Info><span>{date.day}</span> {date.description}</Info>
+            <Value status={date.status}>
+              {date.value} 
+              <span onClick={()=> handleDeleteRecord(date.idRecord)}>x</span>
+            </Value>
         </div>
+      );
+    });
+    balance = <Balance>
+    <p>SALDO</p>
+    <Total>19999</Total>
+  </Balance>;
+  }
+  function handleDeleteRecord(id){
+    const promise = deleteRecord(token,id);
+    promise.then(()=>{
+      Swal.fire({
+        icon: 'success',
+        title: 'Oba..',
+        text: 'Registro deletado com sucesso!'
+      });
+    });
+    promise.catch((err)=>{
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Ocorreu um erro ao deletar o registro!'
+      });
+    });
+  }
+  return(
+    <Registrationbox records={(records.length > 0)}>
+      <List>
+        {(records.length > 0) ? records : <span>Não há registros de <br/>entrada ou saída</span>}
       </List>
-      <Balance>
-        <p>SALDO</p>
-        <Total>19999</Total>
-      </Balance>
+      {balance}
     </Registrationbox>
   );
 }
-const Registrationbox = styled.div`
-  width: 325px;
-  height: 446px;
-
-  background-color: #FFFFFF;
-
-  margin: 22px 0px 13px 0px;
-  padding:23px 12px 12px 12px;
-
-  border-radius: 5px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-
-  span{
-    text-align: center;
-    font-size: 20px;
-    font-weight: 400;
-    color: #868686;
-  }
-`;
-const List = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-
-  div{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-`;
-
-
-const Value = styled.p`
-  font-size: 16px;
-  font-weight: 400;
-  color: #C70000;
-  span{
-    margin-left: 10px;
-    color: #C6C6C6;
-  }
-  &:hover{
-    cursor:pointer;
-  }
-`;
-const Info = styled.p`
-    font-size: 16px;
-    font-weight: 400;
-    color: #000000;
-    span{
-      margin-right: 5px;
-      color: #C6C6C6;
-    }
-`;
-
-const Balance = styled.div`
-  width: 100%;
-
-  display: flex;
-  justify-content: space-between;
-  p{
-    font-weight: 700;
-    font-size: 17px;
-    color: #000000;
-  }
-`;
-const Total = styled.div`
-    color: #03AC00;
-    font-weight: 400;
-    font-size: 17px;
-`;
